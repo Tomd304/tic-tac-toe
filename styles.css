@@ -50,6 +50,7 @@ body {
     height: 150px;
     display: flex;
     align-items: center;
+    gap: 50px;
 }
 
 #reset-btn {
@@ -59,5 +60,11 @@ body {
     padding: 15px 30px;
     font-size: 30px;
     color: whitesmoke;
+    font-weight: 900;
+}
+
+.footer h2 {
+    color: #827E44;
+    font-size: 30px;
     font-weight: 900;
 }
