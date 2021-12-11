@@ -17,7 +17,7 @@ const gameboard = (() => {
 
     const playTurn = (y, x) => {
         
-        if (boardArray[y][x] == 0) {
+        if (boardArray[y][x] == 0 && gameEnd == false) {
             setXY(y, x)
             changeArray()
             printObject()
@@ -78,10 +78,12 @@ const gameboard = (() => {
                 if (playerOneTurn) {
                     player1.winner = true
                     gameEnd = true
+                    break;
                 }
                 else {
                     player2.winner = true
-                    gameEnd = true                
+                    gameEnd = true
+                    break;                
                 }
                 break;
             case checkDraw():
