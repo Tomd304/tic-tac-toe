@@ -5,25 +5,28 @@ const playerFactory = (playerNumber, marker, myTurn, winner) => {
 player1 = playerFactory(1, 'X', true, false)
 player2 = playerFactory(2, 'O', false, false)
 
+let displayMsg = document.querySelector('h2')
+displayMsg.textContent = `Player 1's Turn`
+
 const gameboard = (() => {
     let boardArray = [[0, 0, 0],[0, 0, 0],[0, 0, 0]]
     let selectedX = 0
     let selectedY = 0
     let playerOneTurn = true
-    let winner = false
+    let gameEnd = false
 
     const playTurn = (y, x) => {
-        if (winner == true) {
-            console.log('Game Over')
-            console.log(player1.winner ? 'Player One has Won.' : 'Player Two has Won')
-        }
-        else if (boardArray[y][x] == 0) {
+        
+        if (boardArray[y][x] == 0) {
             setXY(y, x)
             changeArray()
             printObject()
             drawSquares()
-            checkWinner()
+            checkFinish()
             switchPlayer()
+        }
+        if (gameEnd == true) {
+            displayMsg.textContent = player1.winner ? 'Player 1 wins.' : player2.winner ? 'Player 2 wins' : 'Tie!'
         }
     }
 
@@ -63,9 +66,10 @@ const gameboard = (() => {
 
     const switchPlayer = () => {
         playerOneTurn = playerOneTurn ? false : true
+        displayMsg.textContent = playerOneTurn ? `Player 1's Turn` : `Player 2's Turn`
     }
 
-    const checkWinner = () => {
+    const checkFinish = () => {
         switch (true) {
             case boardArray[selectedY][0] == boardArray[selectedY][1] && boardArray[selectedY][0] == boardArray[selectedY][2]:
             case boardArray[0][selectedX] == boardArray[1][selectedX] && boardArray[0][selectedX] == boardArray[2][selectedX]:
@@ -73,16 +77,30 @@ const gameboard = (() => {
             case boardArray[0][2] == boardArray[1][1] && boardArray[2][0] == boardArray[1][1] && boardArray[1][1] != 0:
                 if (playerOneTurn) {
                     player1.winner = true
-                    winner = true
+                    gameEnd = true
                 }
                 else {
                     player2.winner = true
-                    winner = true                
+                    gameEnd = true                
                 }
+                break;
+            case checkDraw():
+                gameEnd = true
                 break;
             default:
                 break;
         }
+    }
+
+    const checkDraw = () => {
+        let end = true
+        boardArray.forEach(arr => {
+            if (arr.includes(0)) {
+                end = false
+                return
+            }
+        })     
+        return end;
     }
 
     const resetGame = () => {
@@ -90,18 +108,21 @@ const gameboard = (() => {
         selectedX = 0
         selectedY = 0
         playerOneTurn = true
-        winner = false
+        gameEnd = false
         drawSquares()
+        player1.winner = false
+        player2.winner = false
+        displayMsg.textContent = `Player 1's Turn`
     }
 
-    return {playTurn, resetGame, winner}
+    return {playTurn, resetGame, gameEnd}
 })();
 
 let squares = document.querySelectorAll('.game-square')
 
 squares.forEach(square => {
     square.addEventListener('click', () => {
-        if (gameboard.winner == false) {
+        if (gameboard.gameEnd == false) {
             gameboard.playTurn(square.dataset.y, square.dataset.x)
         }
         
